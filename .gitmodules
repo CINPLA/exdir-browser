@@ -1,0 +1,3 @@
+[submodule "vendor/elegant-npy"]
+	path = vendor/elegant-npy
+	url = git@github.com:dragly/elegant-npy.git
