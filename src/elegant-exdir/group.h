@@ -14,7 +14,7 @@
 namespace elegant {
 namespace exdir {
 
-class Group : public Object
+class  Group : public Object
 {
 public:
     Group(ConversionFlags conversionFlags = ConversionFlags::NoFlags);

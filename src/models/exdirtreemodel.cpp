@@ -4,6 +4,7 @@
 
 #include <QDebug>
 
+#include <QElapsedTimer>
 #include <QFile>
 #include <QFileInfo>
 #include <QQmlFile>
@@ -72,7 +73,17 @@ int ExdirTreeModel::rowCount(const QModelIndex &parent) const
         }
         return m_root->children().count();
     }
-    const ExdirTreeItem* parentItem = item(parent);
+    ExdirTreeItem* parentItem = item(parent);
+    if(parentItem->needsChildIteration) {
+        QString filePath = QQmlFile::urlToLocalFileOrQrc(m_source);
+        File file(filePath.toStdString(), File::OpenMode::ReadWrite);
+        Object object = file[parentItem->path().toStdString()];
+        if(object.isGroup()) {
+            Group group = object;
+            addChildObjects(parentItem, group, parentItem->depth + 1);
+        }
+        parentItem->needsChildIteration = false;
+    }
     return parentItem->children().count();;
 }
 
@@ -152,7 +163,7 @@ void ExdirTreeModel::setSource(QUrl source)
     emit sourceChanged(source);
 }
 
-void ExdirTreeModel::addChildObjects(ExdirTreeItem* parent, const Group& parentGroup, int depth)
+void ExdirTreeModel::addChildObjects(ExdirTreeItem* parent, const Group& parentGroup, int depth) const
 {
     int row = 0;
     for(const std::string& key : parentGroup.keys()) {
@@ -214,8 +225,7 @@ void ExdirTreeModel::addChildObjects(ExdirTreeItem* parent, const Group& parentG
         node->setInfo(info);
 
         if(object.isGroup()) {
-            Group group = object;
-            addChildObjects(node, group, depth + 1);
+            node->needsChildIteration = true;
         }
         row += 1;
     }
@@ -223,13 +233,13 @@ void ExdirTreeModel::addChildObjects(ExdirTreeItem* parent, const Group& parentG
 
 void ExdirTreeModel::loadFile()
 {
+    QElapsedTimer timer;
+    timer.start();
     qDebug() << "Loading tree";
     if(!m_source.isValid() || m_source.isEmpty()) {
         qDebug() << "Not loading because" << m_source;
         return;
     }
-
-    qDebug() << "Loading tree go!";
     QString filePath = QQmlFile::urlToLocalFileOrQrc(m_source);
     QString filenameOnly = filePath;
     QFileInfo fileInfo(filePath);
@@ -244,6 +254,8 @@ void ExdirTreeModel::loadFile()
     ExdirTreeItem *fileItem = new ExdirTreeItem(0, 0, 1, filenameOnly, "", "File", m_root);
     addChildObjects(fileItem, file, 0);
     emit dataChanged(QModelIndex(), QModelIndex());
+
+    qDebug() << "Done loading tree:" << timer.elapsed();
 }
 
 ExdirTreeItem::ExdirTreeItem() {}

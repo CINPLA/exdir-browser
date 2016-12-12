@@ -234,7 +234,7 @@ ApplicationWindow {
 
                 }
             }
-            onClicked: treeView.selection.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect) // FIXME: issue with TreeView in 5.7
+//            onClicked: treeView.selection.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect) // FIXME: issue with TreeView in 5.7
             onDoubleClicked: isExpanded(index) ? collapse(index) : expand(index)
             model: treeModel
         }

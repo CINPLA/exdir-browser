@@ -25,8 +25,7 @@ Dataset::~Dataset()
 vector<size_t> Dataset::extents() const
 {
     fs::path filePath = path() / "data.npy";
-    cout << "Loading dataset " << filePath << endl;
-    auto data = npy::load(filePath.string());
+    const auto& data = npy::load(filePath.string());
     return data.shape();
 }
 

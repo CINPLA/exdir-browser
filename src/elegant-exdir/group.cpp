@@ -65,10 +65,8 @@ vector<string> Group::keys() const
         return vector<string>();
     }
     vector<string> result;
-    std::cout << path() << std::endl;
     for(auto& entry : boost::make_iterator_range(fs::directory_iterator(path()), {})) {
         if(boost::filesystem::is_directory(entry)) {
-            cout << "Found" << entry << "in" << path() << endl;
             result.push_back(entry.path().filename().string());
         }
     }
@@ -89,13 +87,14 @@ Object Group::item(string key) const
     if(!isValid()) {
         throw(std::runtime_error("Requested key from from invalid group object"));
     }
+    cout << "Key requsted: " << key << endl;
     if(!hasKey(key)) {
+        cerr << "Key not found: " << key << endl;
         throw(std::runtime_error("Could not find key"));
     }
     boost::filesystem::path keyPath = path() / key;
     boost::filesystem::path metaFilePath = keyPath / "meta.yml";
 
-    std::cout << metaFilePath << endl;
     YAML::Node rootNode = YAML::LoadFile(metaFilePath.string());
     YAML::Node exdirNode = rootNode["exdir"];
     Type type = Type::Invalid;
@@ -104,6 +103,8 @@ Object Group::item(string key) const
     } else if (exdirNode["type"].as<string>() == "dataset") {
         type = Type::Dataset;
     }
+
+//    Type type = Type::Group;
     return Object(key, m_path / key, type, m_inheritedConversionFlags);
 }
 

@@ -28,6 +28,7 @@ public:
     int row = 0;
     int column = 0;
     int depth = 0;
+    bool needsChildIteration = false;
     QString m_name;
     QString m_path;
     QString m_type;
@@ -35,7 +36,6 @@ public:
     QString name() const;
     QString path() const;
     QString type() const;
-
     QString info() const;
 
 public slots:
@@ -88,7 +88,7 @@ signals:
 private:
     ExdirTreeItem* m_root = nullptr;
     QUrl m_source;
-    void addChildObjects(ExdirTreeItem *item, const elegant::exdir::Group &group, int depth);
+    void addChildObjects(ExdirTreeItem *item, const elegant::exdir::Group &group, int depth) const;
 };
 
 #endif // EXDIRTREEMODEL_H

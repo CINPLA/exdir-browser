@@ -111,6 +111,7 @@ boost::filesystem::path Attribute::path() const
 
 std::string Attribute::toString() const
 {
+    // TODO perhaps just return the YAML node?
     fs::path filePath = m_path / "attributes.yml";
     if(!fs::exists(filePath)) {
         cerr << filePath << endl;
@@ -149,7 +150,6 @@ std::string Attribute::toString() const
         return "[undefined]";
     }
     auto value = node.as<string>();
-    cout << "Value: " << value << endl;
     return value;
 }
 

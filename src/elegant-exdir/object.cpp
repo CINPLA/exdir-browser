@@ -25,7 +25,6 @@ Object::Object(string name, boost::filesystem::path path, Type type, ConversionF
     , m_type(type)
     , m_inheritedConversionFlags(inheritedConversionFlags)
 {
-    cout << "Creating object:\nname: " << name << "\npath " << path << "\ntype: " << (type == Type::Dataset) << endl;
 }
 
 Object::Object(const Object &other, Object::CopyMode mode)
