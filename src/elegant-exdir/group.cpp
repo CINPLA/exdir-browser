@@ -70,6 +70,7 @@ vector<string> Group::keys() const
             result.push_back(entry.path().filename().string());
         }
     }
+    sort(begin(result), end(result));
     return result;
 }
 
