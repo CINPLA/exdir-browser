@@ -88,9 +88,7 @@ Object Group::item(string key) const
     if(!isValid()) {
         throw(std::runtime_error("Requested key from from invalid group object"));
     }
-    cout << "Key requsted: " << key << endl;
     if(!hasKey(key)) {
-        cerr << "Key not found: " << key << endl;
         throw(std::runtime_error("Could not find key"));
     }
     boost::filesystem::path keyPath = path() / key;
