@@ -19,7 +19,6 @@ Attribute::Attribute(fs::path path, const std::string &name, Object::ConversionF
     , m_name(name)
     , m_inheritedConversionFlags(inheritedFlags)
 {
-    cerr << "Construct attribute by parent and name " << m_path << " " << m_name << endl;
 }
 
 

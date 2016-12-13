@@ -20,7 +20,6 @@ File::File(string folderName, File::OpenMode mode, ConversionFlags conversionFla
     m_path = folderName;
     m_type = Type::File;
     bool alreadyExists = boost::filesystem::exists(folderName);
-    std::cout << folderName << std::endl;
     if (alreadyExists) {
         // TODO check if valid object folder and proper meta.yml
     }

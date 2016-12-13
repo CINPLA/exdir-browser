@@ -295,7 +295,6 @@ void ExdirDatasetModel::load()
     QString fileNameString = QQmlFile::urlToLocalFileOrQrc(m_source);
     std::string datasetName = m_dataset.toStdString();
     File file(fileNameString.toStdString(), File::OpenMode::ReadWrite);
-    qDebug() << "Dataset name:" << QString::fromStdString(datasetName);
     if(file[datasetName].isDataset()) {
         Dataset dataset = file[datasetName];
         m_hasData = true;
@@ -351,7 +350,6 @@ bool ExdirDatasetModel::save()
     qDebug() << "Loading" << m_dataset << "in" << fileNameString;
     File file(fileNameString.toStdString(), File::OpenMode::ReadWrite);
 
-    qDebug() << file[datasetName].isDataset();
     if(file[datasetName].isDataset()) {
         Dataset dataset = file[datasetName];
         boost::apply_visitor(save_visitor(&dataset, m_dimensionCount), m_dataPointer);
