@@ -5,7 +5,7 @@
 #include <QUrl>
 #include <npy.h>
 
-#include <elegant-exdir/group.h>
+#include <elegant-exdir/Group>
 
 class ExdirTreeItem : public QObject
 {

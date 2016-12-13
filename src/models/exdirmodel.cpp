@@ -1,8 +1,8 @@
 #include "exdirmodel.h"
 
-#include <elegant-exdir/attribute.h>
-#include <elegant-exdir/dataset.h>
-#include <elegant-exdir/file.h>
+#include <elegant-exdir/Attribute>
+#include <elegant-exdir/Dataset>
+#include <elegant-exdir/File>
 
 #include <boost/variant/get.hpp>
 

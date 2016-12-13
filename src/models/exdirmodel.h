@@ -1,8 +1,8 @@
 #ifndef EXDIRMODEL_H
 #define EXDIRMODEL_H
 
-#include <elegant-exdir/datatype.h>
-#include <elegant-exdir/dataset.h>
+#include <elegant-exdir/Datatype>
+#include <elegant-exdir/Dataset>
 
 #include <QAbstractTableModel>
 #include <QObject>

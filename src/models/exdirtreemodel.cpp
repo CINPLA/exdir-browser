@@ -1,6 +1,6 @@
 #include "exdirtreemodel.h"
 
-#include <elegant-exdir/file.h>
+#include <elegant-exdir/File>
 
 #include <QDebug>
 

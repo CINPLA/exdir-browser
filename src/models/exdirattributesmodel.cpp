@@ -11,8 +11,8 @@
 
 #include <npy.h>
 
-#include <elegant-exdir/attribute.h>
-#include <elegant-exdir/file.h>
+#include <elegant-exdir/Attribute>
+#include <elegant-exdir/File>
 
 using namespace std;
 using namespace arma;
