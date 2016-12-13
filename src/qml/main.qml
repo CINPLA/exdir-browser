@@ -104,7 +104,6 @@ ApplicationWindow {
         id: tableModel
 
         function loadCurrentDataset() {
-            console.log(treeView.currentItem)
             tableModel.dataset = treeView.currentItem.path
         }
 
