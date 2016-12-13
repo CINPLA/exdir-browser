@@ -1,2 +1,2 @@
 # elegant-npy
-Simple, elegant C++ library for reading NumPy files
+Simple, elegant C++ library for reading NumPy files.
