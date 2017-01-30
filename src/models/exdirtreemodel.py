@@ -116,7 +116,7 @@ class ExdirTreeModel(QAbstractItemModel):
 
         self._source = source
         self.loadFile()
-        self.sourceChanged.emit()
+        self.sourceChanged.emit(source)
 
     def addChildObjects(self, parent, parentGroup, depth):
         row = 0
@@ -188,8 +188,8 @@ class ExdirTreeModel(QAbstractItemModel):
         self.addChildObjects(fileItem, file, 0)
         self.dataChanged.emit(QModelIndex(), QModelIndex())
         
-    sourceChanged = pyqtSignal()
-    source = pyqtProperty(QUrl, source, setSource, sourceChanged)
+    sourceChanged = pyqtSignal(QUrl)
+    source = pyqtProperty(QUrl, source, setSource, notify=sourceChanged)
 
 class ExdirTreeItem(QObject):
     def __init__(self, row_, column_, depth_, name_, path_, type, parent):
