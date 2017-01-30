@@ -315,87 +315,87 @@ ApplicationWindow {
                     width: parent.width
                 }
             }
-        //     ListView {
-        //         anchors {
-        //             top: objectInfoColumn.bottom
-        //             topMargin: 24
-        //             bottom: parent.bottom
-        //             left: objectInfoColumn.left
-        //             right: objectInfoColumn.right
-        //         }
-        //         spacing: 12
-        //         model: ExdirAttributesModel {
-        //             id: attributesModel
-        //             source: treeModel.source
-        //             path: tableModel.dataset
-        //         }
-        //         delegate: Column {
-        //             spacing: 8
-        //             width: parent.width
-        //             TextEdit {
-        //                 anchors {
-        //                     left: parent.left
-        //                     right: parent.right
-        //                 }
-        //                 text: name ? name : ""
-        //                 font.pointSize: 10.5
-        //                 color: "#494949"
-        //                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-        //                 selectByMouse: true
-        //                 readOnly: true
-        //                 onFocusChanged: {
-        //                     if(!focus) {
-        //                         select(0, 0)
-        //                     }
-        //                 }
-        //             }
-        //             TextEdit {
-        //                 anchors {
-        //                     left: parent.left
-        //                     leftMargin: 16
-        //                     right: parent.right
-        //                 }
-        //                 text: value ? formatValue(value) : ""
-        //                 selectByMouse: true
-        //                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-        //                 color: "#121212"
-        //                 font.pointSize: 11
-        //                 font.weight: Font.Light
-        //                 readOnly: true
-        //                 onFocusChanged: {
-        //                     if(!focus) {
-        //                         select(0, 0)
-        //                     }
-        //                 }
-        //                 function formatValue(value) {
-        //                     if(typeof(value) == "object") {
-        //                         var string = "["
-        //                         var first = true
-        //                         for(var i in value) {
-        //                             if(!first) {
-        //                                 string += ", "
-        //                             }
-        //                             string += value[i]
-        //                             first = false
-        //                         }
-        //                         string += "]"
-        //                         return string
-        //                     } else {
-        //                         return value
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //         Text {
-        //             anchors.centerIn: parent
-        //             visible: attributesModel.count < 1
-        //             text: "< no attributes >"
-        //             color: "#787878"
-        //             font.weight: Font.Light
-        //             font.pointSize: 10
-        //         }
-        // 
-        //     }
+            ListView {
+                anchors {
+                    top: objectInfoColumn.bottom
+                    topMargin: 24
+                    bottom: parent.bottom
+                    left: objectInfoColumn.left
+                    right: objectInfoColumn.right
+                }
+                spacing: 12
+                model: ExdirAttributesModel {
+                    id: attributesModel
+                    source: treeModel.source
+                    path: tableModel.dataset
+                }
+                delegate: Column {
+                    spacing: 8
+                    width: parent.width
+                    TextEdit {
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        text: name ? name : ""
+                        font.pointSize: 10.5
+                        color: "#494949"
+                        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        selectByMouse: true
+                        readOnly: true
+                        onFocusChanged: {
+                            if(!focus) {
+                                select(0, 0)
+                            }
+                        }
+                    }
+                    TextEdit {
+                        anchors {
+                            left: parent.left
+                            leftMargin: 16
+                            right: parent.right
+                        }
+                        text: value ? formatValue(value) : ""
+                        selectByMouse: true
+                        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        color: "#121212"
+                        font.pointSize: 11
+                        font.weight: Font.Light
+                        readOnly: true
+                        onFocusChanged: {
+                            if(!focus) {
+                                select(0, 0)
+                            }
+                        }
+                        function formatValue(value) {
+                            if(typeof(value) == "object") {
+                                var string = "["
+                                var first = true
+                                for(var i in value) {
+                                    if(!first) {
+                                        string += ", "
+                                    }
+                                    string += value[i]
+                                    first = false
+                                }
+                                string += "]"
+                                return string
+                            } else {
+                                return value
+                            }
+                        }
+                    }
+                }
+                Text {
+                    anchors.centerIn: parent
+                    visible: attributesModel.count < 1
+                    text: "< no attributes >"
+                    color: "#787878"
+                    font.weight: Font.Light
+                    font.pointSize: 10
+                }
+        
+            }
         }
         ScrollView {
             id: scrollView
