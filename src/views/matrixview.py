@@ -105,7 +105,7 @@ class MatrixView(QQuickItem):
             return
 
         self._currentIndex = currentIndex
-        self._currentIndexChanged.emit(currentIndex)
+        self.currentIndexChanged.emit(currentIndex)
 
 
     def reconnectObjects(self):
@@ -354,7 +354,7 @@ class MatrixView(QQuickItem):
                         item.forceActiveFocus()
 
     def keyPressEvent(self, *event):
-        index = currentIndex()
+        index = self.currentIndex
         currentRow = index.row()
         currentColumn = index.column()
 

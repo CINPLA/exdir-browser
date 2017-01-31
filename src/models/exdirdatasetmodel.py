@@ -2,6 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtQml import *
 import exdir
 
+
 class ExdirDatasetModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -11,14 +12,15 @@ class ExdirDatasetModel(QAbstractTableModel):
         self.hasData = False
         self._hasUnsavedChanges = False
         self._dataset = ""
-        self.dataPointer = None
-    
+        self._datasetObject = None
+        self._data = None
+
     def rowCount(self, parent=QModelIndex()):
         if not self.hasData:
             return 0
 
-        if len(self.dataPointer.shape) > 0:
-            return self.dataPointer.shape[0]
+        if len(self._data.shape) > 0:
+            return self._data.shape[0]
         else:
             return 0
 
@@ -26,16 +28,16 @@ class ExdirDatasetModel(QAbstractTableModel):
         if not self.hasData:
             return 0
 
-        if len(self.dataPointer.shape) > 1:
-            return self.dataPointer.shape[1]
+        if len(self._data.shape) > 1:
+            return self._data.shape[1]
         else:
             return 1
 
-    def inBounds(self, index):        
+    def inBounds(self, index):
         if not self.hasData:
             return False
 
-        shape = self.dataPointer.shape
+        shape = self._data.shape
         if len(shape) > 0:
             if index.row() < 0 or index.row() >= shape[0]:
                 return False
@@ -59,13 +61,13 @@ class ExdirDatasetModel(QAbstractTableModel):
 
         if role == Qt.DisplayRole:
             if self.inBounds(index):
-                if len(self.dataPointer.shape) > 2:
-                    return self.dataPointer[index.row(), index.column(), self._currentSlice]
-                elif len(self.dataPointer.shape) > 1:
-                    return self.dataPointer[index.row(), index.column()]
-                elif len(self.dataPointer.shape) > 0:
-                    return self.dataPointer[index.row()]
-                else: 
+                if len(self._data.shape) > 2:
+                    return self._data[index.row(), index.column(), self._currentSlice]
+                elif len(self._data.shape) > 1:
+                    return self._data[index.row(), index.column()]
+                elif len(self._data.shape) > 0:
+                    return self._data[index.row()]
+                else:
                     return QVariant()
             else:
                 print("Requested index out of bounds", index.row(), index.column())
@@ -74,17 +76,25 @@ class ExdirDatasetModel(QAbstractTableModel):
             return QVariant()
 
     def setData(self, index, value, role):
-        if not index.isValid():        
+        if not index.isValid():
             return False
 
-        if not self.inBounds((index)):        
+        if not self.inBounds((index)):
             return False
 
-        # if not value.canConvert<double>():        
-            # TODO canconvert?
-            # return False
+        try:
+            value = float(value)
+        except:
+            print("WARNING: Value is not a number:", value, type(value))
+            return False
 
-        # TODO set data
+        if self.dimensionCount > 2:
+            self._data[self.currentSlice, index.row(), index.column()] = value
+        elif self.dimensionCount > 1:
+            self._data[index.row(), index.column()] = value
+        else:
+            self._data[index.row()] = value
+        
         self._hasUnsavedChanges = True
         self.dataChanged.emit(index, index)
         self.hasUnsavedChangesChanged.emit(self._hasUnsavedChanges)
@@ -110,7 +120,6 @@ class ExdirDatasetModel(QAbstractTableModel):
         self.datasetChanged.emit(dataSet)
 
     def setSource(self, source):
-        print("Setting source to", source)
         if self._source == source:
             return
 
@@ -144,53 +153,18 @@ class ExdirDatasetModel(QAbstractTableModel):
         fileNameString = self.source.toLocalFile()
         datasetName = self._dataset
         file = exdir.File(fileNameString)
-        
-        print("Dataset name", datasetName)
-        
+
         dataset = file[datasetName]
         if isinstance(dataset, exdir.core.Dataset):
-            print("Is dataset!")
             self.hasData = True
-            # TODO can we request shape without loading all the data?
-            # data = dataset.data
-            # self.dataPointer = dataset
-            self.dataPointer = dataset.data # TODO point to dataset when we don't reload file every time
-            # self.currentType = dataset.datatype()
-            # self.dimensionCount = dataset.dimensionCount()
-            # extents = dataset.extents()
-            
+            self._datasetObject = dataset
+            self._data = dataset.data # TODO point to dataset when exdir doesn't reload file one every read
+
             shape = dataset.shape
             self.dimensionCount = len(shape)
-            
-            print("Dimension count", self.dimensionCount)
-            
+
             if self.dimensionCount == 3:
-                self.setSliceCount(extents[0])
-
-
-            # TODO implement
-            # switch(self.currentType)        
-            # case Datatype.Type.Int:
-            #     self.dataPointer = dataset.value<arma.Cube<int>>(Object.ConversionFlags.GreaterThanOrEqualDimensionCount)
-            #     break
-            # case Datatype.Type.Long:
-            #     self.dataPointer = dataset.value<arma.Cube<long int>>(Object.ConversionFlags.GreaterThanOrEqualDimensionCount)
-            #     break
-            # case Datatype.Type.Float:
-            #     self.dataPointer = dataset.value<arma.Cube<float>>(Object.ConversionFlags.GreaterThanOrEqualDimensionCount)
-            #     break
-            # case Datatype.Type.Double:
-            #     self.dataPointer = dataset.value<arma.Cube<double>>(Object.ConversionFlags.GreaterThanOrEqualDimensionCount)
-            #     break
-            # default:
-            #     qWarning() << "Could not read self type of data"
-            #     self.hasData = False
-            #     self.dimensionCount = 0
-            #     break
-            # 
-            # if self.dimensionCount == 1:            # transpose to visualize 1D as column instead of row
-            #     boost.apply_visitor(transpose_visitor(), self.dataPointer)
-
+                self.setSliceCount(shape[0])
 
         if not self.hasData or self.dimensionCount != 3:
             self.setSliceCount(1)
@@ -200,26 +174,26 @@ class ExdirDatasetModel(QAbstractTableModel):
         self.dataChanged.emit(QModelIndex(), QModelIndex())
         self.hasUnsavedChangesChanged.emit(self._hasUnsavedChanges)
 
+    @pyqtSlot(result=bool)
     def save(self):
-        pass
-        # TODO implement save
+        print("Saving file")
         # # TODO keep working on the same file when loading/saving
+        if not self.source.isValid() or not self._dataset:        
+            return False
         # 
-        # qDebug() << "Saving file"
-        # if not self.source.isValid() or self._dataset.isEmpty():        return False
+        fileNameString = self._source.toLocalFile()
+        datasetName = self._dataset
+        # # qDebug() << "Loading" << self.dataset << "in" << fileNameString
+        file = exdir.File(fileNameString)
         # 
-        # fileNameString = QQmlFile.urlToLocalFileOrQrc(self.source)
-        # datasetName = self._dataset.toStdString()
-        # qDebug() << "Loading" << self.dataset << "in" << fileNameString
-        # File file(fileNameString.toStdString(), File.OpenMode.ReadWrite)
-        # 
-        # if file[datasetName].isDataset():        dataset = file[datasetName]
-        #     boost.apply_visitor(save_visitor(dataset, self.dimensionCount), self.dataPointer)
-        # 
-        # self.hasUnsavedChanges = False
-        # hasUnsavedChangesChanged.emit(self.hasUnsavedChanges)
-        # return True
-        
+        if isinstance(file[datasetName], exdir.core.Dataset):
+            dataset = file[datasetName]
+            dataset.data = self._data
+        #
+        self._hasUnsavedChanges = False
+        self.hasUnsavedChangesChanged.emit(self.hasUnsavedChanges)
+        return True
+
     datasetChanged = pyqtSignal(str)
     sourceChanged = pyqtSignal(QUrl)
     hasUnsavedChangesChanged = pyqtSignal(bool)

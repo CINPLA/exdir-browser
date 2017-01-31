@@ -27,9 +27,16 @@ class ExdirTreeModel(QAbstractItemModel):
 
         childItem = parentNode.child(row)
         if childItem:
-            return self.createIndex(row, column, childItem)
+            index = self.createIndex(row, column, childItem)
+            # index = QPersistentModelIndex(self.createIndex(row, column, childItem))
+            # index = QModelIndex(row, column, childItem, self)
+            return index
         else:
             return QModelIndex()
+    
+    @pyqtSlot(QAbstractItemModel, QAbstractItemModel, result=str)
+    def check(self, model1, model2):
+        return "blah"
 
     def parent(self, index):
         if not index.isValid():
@@ -104,8 +111,7 @@ class ExdirTreeModel(QAbstractItemModel):
     def item(self, index):
         if not index.isValid():
             return None
-
-        return index.internalPointer() # TODO what is this now?
+        return index.internalPointer()
 
     def source(self):
         return self._source
@@ -156,7 +162,6 @@ class ExdirTreeModel(QAbstractItemModel):
             # else:
             #     info = QString("%1 dimensional object").arg(dataset.dimensionCount())
 
-            # TODO do we have exdir tree items?
             node = ExdirTreeItem(row, 0, depth + 1,
                                                 key,
                                                 parent.path + "/" + key,
@@ -184,7 +189,9 @@ class ExdirTreeModel(QAbstractItemModel):
 
         file = exdir.File(filePath)
         self.root = ExdirTreeItem(0, 0, 0, "", "", "", None)
+        self.beginInsertRows(QModelIndex(), 0, 0)
         fileItem = ExdirTreeItem(0, 0, 1, filenameOnly, "", "File", self.root)
+        self.endInsertRows()
         self.addChildObjects(fileItem, file, 0)
         self.dataChanged.emit(QModelIndex(), QModelIndex())
         

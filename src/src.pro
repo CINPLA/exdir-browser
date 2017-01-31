@@ -20,14 +20,16 @@ HEADERS += \
     models/exdirattributesmodel.h \
     models/exdirmodel.h \
     models/exdirtreemodel.h \
-    views/matrixview.h
+    views/matrixview.h \
+    treemodel.h
 
 SOURCES += \
     main.cpp \
     models/exdirattributesmodel.cpp \
     models/exdirmodel.cpp \
     models/exdirtreemodel.cpp \
-    views/matrixview.cpp
+    views/matrixview.cpp \
+    treemodel.cpp
 
 #CONFIG += conan_basic_setup
 #include(conanbuildinfo.pri)

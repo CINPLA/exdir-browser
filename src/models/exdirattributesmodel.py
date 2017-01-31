@@ -1,6 +1,7 @@
 from PyQt5.QtCore import *
 import exdir
 
+
 class ExdirAttributesModel(QAbstractTableModel):
     class Role:
         Name = Qt.UserRole + 0
@@ -43,8 +44,6 @@ class ExdirAttributesModel(QAbstractTableModel):
 
         return QVariant()
 
-
-
     def setData(self, index, value, role):
         if not index.isValid():
             return False
@@ -61,7 +60,6 @@ class ExdirAttributesModel(QAbstractTableModel):
         dataChanged.emit(index, index)
         hasUnsavedChangesChanged.emit(self._hasUnsavedChanges)
         return True
-
 
     def roleNames(self):
         return {
@@ -94,11 +92,6 @@ class ExdirAttributesModel(QAbstractTableModel):
     def vectorToString(self, vec):
         return "[" + ", ".join(vec) + "]"
 
-    # 
-    # def vectorAttributeToQVariant(self, attribute):
-    #     return QVariant.fromValue(QVector<T>.fromStdVector(attribute.value<vector<T>>()).toList())
-
-
     def load(self):
         if not self._source.isValid() or not self._path:
             self.beginRemoveRows(QModelIndex(), 0, len(self._data))
@@ -117,9 +110,8 @@ class ExdirAttributesModel(QAbstractTableModel):
         object = file[path]
         self.beginInsertRows(QModelIndex(), 0, len(object.attrs) - 1)
         for key in object.attrs:
-            print("Getting", key)
+            # TODO handle complex attributes
             self._data[key] = str(object.attrs[key])
-            # TODO what if it is a complex attribute?
         self.endInsertRows()
         self.setCount(len(self._data))
         self._hasUnsavedChanges = False

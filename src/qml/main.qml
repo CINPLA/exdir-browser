@@ -23,8 +23,8 @@ ApplicationWindow {
         id: expandLater
         interval: 200
         onTriggered: {
-            var index = treeView.indexAt(20, 20)
-            treeView.expand(index)
+            var index = treeView.__model.mapRowToModelIndex(0)
+            treeView.__model.expand(index) // TODO revert this when calling expand works
         }
     }
 
@@ -126,9 +126,6 @@ ApplicationWindow {
         id: treeModel
         source: ""
         onDataChanged: {
-            treeView.model = null
-            treeView.model = treeModel
-            // tableModel.dataset = ""
             treeView.selection.clear()
         }
     }
@@ -150,41 +147,7 @@ ApplicationWindow {
             Layout.minimumWidth: 300
             Layout.fillHeight: true
             frameVisible: false
-
-            function revertSelection() {
-                selection.revertSelection()
-            }
-
-            selection: ItemSelectionModel {
-                property bool ignoreIndexChange: false
-
-                function revertSelection() {
-                    ignoreIndexChange = true
-                    setCurrentIndex(treeView.ppIndex, ItemSelectionModel.ClearAndSelect)
-                    ignoreIndexChange = false
-                    treeView.pIndex = treeView.ppIndex
-                }
-
-                onCurrentIndexChanged: {
-                    if(ignoreIndexChange) {
-                        return
-                    }
-                    treeView.ppIndex = treeView.pIndex
-                    treeView.pIndex = treeView.currentIndex
-                    tableModel.loadOrAsk(tableModel.loadCurrentDataset,
-                                         treeView.revertSelection,
-                                         tableModel.loadCurrentDataset)
-                }
-
-                model: treeView.model
-            }
-
-            TableViewColumn {
-                title: "Name"
-                role: "name"
-                width: 290
-            }
-
+            model: treeModel
             style: TreeViewStyle {
                 itemDelegate: Item {
                     Text {
@@ -233,9 +196,67 @@ ApplicationWindow {
 
                 }
             }
-//            onClicked: treeView.selection.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect) // FIXME: issue with TreeView in 5.7
-            onDoubleClicked: isExpanded(index) ? collapse(index) : expand(index)
-            model: treeModel
+
+            selection: ItemSelectionModel {
+                property bool ignoreIndexChange: false
+
+                function revertSelection() {
+                    ignoreIndexChange = true
+                    setCurrentIndex(treeView.ppIndex, ItemSelectionModel.ClearAndSelect)
+                    ignoreIndexChange = false
+                    treeView.pIndex = treeView.ppIndex
+                }
+
+                onCurrentIndexChanged: {
+                    if(ignoreIndexChange) {
+                        return
+                    }
+                    treeView.ppIndex = treeView.pIndex
+                    treeView.pIndex = treeView.currentIndex
+                    tableModel.loadOrAsk(tableModel.loadCurrentDataset,
+                                         treeView.revertSelection,
+                                         tableModel.loadCurrentDataset)
+                }
+
+                model: treeView.model
+            }
+
+            function revertSelection() {
+                selection.revertSelection()
+            }
+            
+            onDoubleClicked: __model.isExpanded(index) ? __model.collapse(index) : __model.expand(index)
+            // onClicked: expand(index)
+            
+            
+            // TODO these are defined in the original TreeView, but call TreeView.expand()
+            // which is currently broken in PyQt. Remove these once the original functions work.
+            Keys.onRightPressed: {
+                if (currentIndex.valid)
+                    treeView.__model.expand(currentIndex)
+                else
+                    event.accepted = false
+            }
+
+            Keys.onLeftPressed: {
+                if (currentIndex.valid)
+                    treeView.__model.collapse(currentIndex)
+                else
+                    event.accepted = false
+            }
+
+            Keys.onReturnPressed: {
+                if (currentIndex.valid)
+                    treeView.__model.activated(currentIndex)
+                else
+                    event.accepted = false
+            }
+
+            TableViewColumn {
+                title: "Name"
+                role: "name"
+                width: 290
+            }
         }
         Rectangle {
             Layout.minimumWidth: 300

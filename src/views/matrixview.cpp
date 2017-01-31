@@ -163,8 +163,8 @@ void MatrixView::updateContextData(int row, int column, QQmlContext* context)
     }
 
     context->setContextProperty("index", modelIndex); // TODO: Change to proper index and modelData
-    context->setContextProperty("row", QVariant::fromValue(row));
-    context->setContextProperty("column", QVariant::fromValue(column));
+    // context->setContextProperty("row", QVariant::fromValue(row));
+    // context->setContextProperty("column", QVariant::fromValue(column));
 
     QVariant value = m_model->data(modelIndex, Qt::DisplayRole);
     QString formattedValue;

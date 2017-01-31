@@ -251,7 +251,9 @@ void ExdirTreeModel::loadFile()
         delete m_root;
     }
     m_root = new ExdirTreeItem(0, 0, 0, "", "", "", 0);
+    beginInsertRows(QModelIndex(), 0, 0);
     ExdirTreeItem *fileItem = new ExdirTreeItem(0, 0, 1, filenameOnly, "", "File", m_root);
+    endInsertRows();
     addChildObjects(fileItem, file, 0);
     emit dataChanged(QModelIndex(), QModelIndex());
 
