@@ -1,0 +1,37 @@
+package:
+  name: exdir-browser
+  version: 0.1
+  
+source:
+  path: .
+ 
+build:
+    script: python setup.py install
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - pip
+    - numpy
+    - quantities
+    - pyyaml
+
+  run:
+    - python
+    - setuptools
+    - pip
+    - numpy
+    - scipy
+    - quantities
+    - pyyaml
+    - exdir
+
+test:
+  imports:
+    - exdirbrowser
+
+about:
+  home: https://github.com/CINPLA/exdir-browser/
+  license: GPLv3
+  license_file: LICENSE
