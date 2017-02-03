@@ -1,6 +1,6 @@
 package:
   name: exdir-browser
-  version: 0.1
+  version: {{ environ.get("GIT_DESCRIBE", "unknown_version")|replace("v", "")|replace("-", "_") }}
   
 source:
   path: .
