@@ -2,8 +2,9 @@ package:
   name: exdir-browser
   version: {{ environ.get("GIT_DESCRIBE", "unknown_version")|replace("v", "")|replace("-", "_") }}
 
-build:
-  noarch: python
+# build:
+  # noarch: python  # TODO Add back noarch when it works properly on Windows,
+                    # we are converting packages manually now
 
 source:
   path: .

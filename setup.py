@@ -15,5 +15,8 @@ setup(
     packages=find_packages(),
     entry_points=entry_points,
     include_package_data=True,
-    scripts=["bin/exdir-browser"]
+    entry_points='''
+        [console_scripts]
+        exdir-browser=exdirbrowser.main:main
+    '''
 )
