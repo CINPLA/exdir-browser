@@ -1,5 +1,5 @@
 if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-    PACKAGE=$(conda build -c conda-forge exdir-browser --output --python "$TRAVIS_PYTHON_VERSION")
+    PACKAGE=$(conda build -c conda-forge . --output --python "$TRAVIS_PYTHON_VERSION")
     echo "Package name $PACKAGE"
     conda convert "$PACKAGE" --platform win-64 -o packages
     conda convert "$PACKAGE" --platform osx-64 -o packages
