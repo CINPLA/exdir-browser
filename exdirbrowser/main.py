@@ -2,10 +2,14 @@
 
 import ctypes
 from ctypes.util import find_library
+import sys
 
-# OpenGL fix (must be set before other imports)
-libGL = find_library("GL")
-ctypes.CDLL(libGL, ctypes.RTLD_GLOBAL)
+from sys import platform
+if platform == "linux" or platform == "linux2":
+    # TODO remove this OpenGL fix when PyQt doesn't require OpenGL to be loaded first. 
+    # NOTE This must be placed before any other imports!
+    libGL = find_library("GL")
+    ctypes.CDLL(libGL, ctypes.RTLD_GLOBAL)
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
