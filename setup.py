@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 import os
-
+import subprocess
 from setuptools import setup, find_packages
 
 long_description = open("README.md").read()
