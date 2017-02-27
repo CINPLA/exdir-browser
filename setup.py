@@ -6,7 +6,8 @@ from setuptools import setup, find_packages
 
 long_description = open("README.md").read()
 
-install_requires = []
+subprocess.run(['pyrcc5', '-o', 'exdirbrowser/qml_qrc.py',
+                'exdirbrowser/qml.qrc'])
 
 setup(
     name="Exdir Browser",
