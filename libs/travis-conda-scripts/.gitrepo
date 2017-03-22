@@ -6,6 +6,6 @@
 [subrepo]
 	remote = git@github.com:CINPLA/travis-conda-scripts.git
 	branch = master
-	commit = bd5382eddd607c318738126da0cd2e820ce861a1
-	parent = eb402e93a89e328d5ea4b513c45924c2cc46a0b4
+	commit = dad84974df421996263f336f64145bce4b509c4a
+	parent = 00056b8044a049b13c8e6345a3b5c0e1f795803b
 	cmdver = 0.3.0
