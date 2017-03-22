@@ -11,7 +11,7 @@ build:
                     
 
 source:
-  path: .
+  git_url: ..
  
 requirements:
   build:
