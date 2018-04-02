@@ -95,6 +95,8 @@ ApplicationWindow {
             windowRoot.loadFile(fileUrl)
         }
 
+        selectFolder: true
+
         onAccepted: {
             tableModel.loadOrAsk(loadFile, undefined, loadFile)
         }
