@@ -10,7 +10,7 @@ source:
 
 requirements:
   build:
-    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - boost
     - boost-cpp
     - libboost
