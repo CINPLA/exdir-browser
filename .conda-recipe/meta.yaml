@@ -10,10 +10,10 @@ source:
 
 requirements:
   build:
+    - {{ compiler('c') }}
+  host:
     - boost
     - boost-cpp
-    - gcc
-    - libgcc
     - qt
     - yaml
 
