@@ -17,10 +17,6 @@ requirements:
     - qt
     - yaml
 
-test:
-  imports:
-    - exdirbrowser
-
 about:
   home: https://github.com/CINPLA/exdir-browser/
   license: GPLv3
