@@ -1,3 +1,6 @@
+echo "============= START BUILD ============="
+echo "Compiler: ${CXX}"
+
 which g++
 which qmake
 mkdir -p $PREFIX/bin

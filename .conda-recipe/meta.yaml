@@ -11,6 +11,11 @@ source:
 requirements:
   build:
     - {{ compiler('c') }}
+    - boost
+    - boost-cpp
+    - libboost
+    - qt
+    - yaml
   host:
     - boost
     - boost-cpp
