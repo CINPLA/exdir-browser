@@ -94,7 +94,7 @@ class ExdirDatasetModel(QAbstractTableModel):
             self._data[index.row(), index.column()] = value
         else:
             self._data[index.row()] = value
-        
+
         self._hasUnsavedChanges = True
         self.dataChanged.emit(index, index)
         self.hasUnsavedChangesChanged.emit(self._hasUnsavedChanges)
@@ -132,7 +132,7 @@ class ExdirDatasetModel(QAbstractTableModel):
             return
 
         self._currentSlice = currentSlice
-        self.dataChanged.emit(index(0, 0), index(rowCount() - 1, columnCount() - 1))
+        self.dataChanged.emit(self.index(0, 0), self.index(self.rowCount() - 1, self.columnCount() - 1))
         self.currentSliceChanged.emit(currentSlice)
 
     def setSliceCount(self, sliceCount):
@@ -178,14 +178,14 @@ class ExdirDatasetModel(QAbstractTableModel):
     def save(self):
         print("Saving file")
         # # TODO keep working on the same file when loading/saving
-        if not self.source.isValid() or not self._dataset:        
+        if not self.source.isValid() or not self._dataset:
             return False
-        # 
+        #
         fileNameString = self._source.toLocalFile()
         datasetName = self._dataset
         # # qDebug() << "Loading" << self.dataset << "in" << fileNameString
         file = exdir.File(fileNameString)
-        # 
+        #
         if isinstance(file[datasetName], exdir.core.Dataset):
             dataset = file[datasetName]
             dataset.data = self._data

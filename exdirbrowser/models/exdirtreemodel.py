@@ -8,7 +8,7 @@ class ExdirTreeModel(QAbstractItemModel):
         Path = Qt.UserRole + 1
         Type = Qt.UserRole + 2
     Q_ENUMS(Role)
-    
+
     def __init__(self, parent):
         super().__init__(parent)
         self._source = None
@@ -33,7 +33,7 @@ class ExdirTreeModel(QAbstractItemModel):
             return index
         else:
             return QModelIndex()
-    
+
     @pyqtSlot(QAbstractItemModel, QAbstractItemModel, result=str)
     def check(self, model1, model2):
         return "blah"
@@ -41,7 +41,7 @@ class ExdirTreeModel(QAbstractItemModel):
     def parent(self, index):
         if not index.isValid():
             return QModelIndex()
-            
+
         childItem = self.item(index)
         parentItem = childItem.parentItem
 
@@ -62,9 +62,14 @@ class ExdirTreeModel(QAbstractItemModel):
         parentItem = self.item(parent)
         if parentItem.needsChildIteration:
             filePath = self.source.toLocalFile()
-            # TODO replace with Python exdir file
             file = exdir.File(filePath)
-            object = file[parentItem.path]
+            try:
+                object = file[parentItem.path]
+            except NotImplementedError as e:
+                print(e)
+                print("Skipping '{}' for this reason".format(path))
+                return len(parentItem.children())
+
             if isinstance(object, exdir.core.Group):
                 group = object
                 self.addChildObjects(parentItem, group, parentItem.depth + 1)
@@ -75,13 +80,13 @@ class ExdirTreeModel(QAbstractItemModel):
         if parent.column() > 0:
             return 0
         return 1
-    
+
     def data(self, index, role):
-        if not index.isValid():     
+        if not index.isValid():
             return QVariant()
 
         indexNode = self.item(index)
-        if not indexNode:        
+        if not indexNode:
             return QVariant()
 
         value = {
@@ -101,12 +106,12 @@ class ExdirTreeModel(QAbstractItemModel):
         return roles
 
     def path(self, index):
-        if not index.isValid():        
+        if not index.isValid():
             return ""
 
         indexNode = self.item(index)
         return indexNode.path
-        
+
     @pyqtSlot(QModelIndex, result=QObject)
     def item(self, index):
         if not index.isValid():
@@ -127,7 +132,13 @@ class ExdirTreeModel(QAbstractItemModel):
     def addChildObjects(self, parent, parentGroup, depth):
         row = 0
         for key in parentGroup.keys():
-            object = parentGroup[key]
+            try:
+                object = parentGroup[key]
+            except NotImplementedError as e:
+                print(e)
+                print("Skipping '{}' for this reason".format(key))
+                continue
+
 
             type = ""
             info = ""
@@ -143,18 +154,18 @@ class ExdirTreeModel(QAbstractItemModel):
                 type = "File"
             elif isinstance(object, exdir.core.Group):
                 type = "Group"
-                
+
             # group = object
             # info = QString("%1 objects").arg(group.keys().size())
-                
+
             # dataset = object
-            # if dataset.dimensionCount() == 1:                
+            # if dataset.dimensionCount() == 1:
             #     info = QString("vector of size %1").arg(dataset.extents()[0])
             # elif dataset.dimensionCount() == 2:
             #     info = QString("%1x%2 matrix")
             #             .arg(dataset.extents()[0])
             #             .arg(dataset.extents()[1])
-            # elif dataset.dimensionCount() == 3:                
+            # elif dataset.dimensionCount() == 3:
             #     info = QString("%1x%2x%3 cube")
             #             .arg(dataset.extents()[0])
             #             .arg(dataset.extents()[1])
@@ -169,7 +180,7 @@ class ExdirTreeModel(QAbstractItemModel):
                                                 parent)
             node.setInfo(info)
 
-            if isinstance(object, exdir.core.Group):            
+            if isinstance(object, exdir.core.Group):
                 node.needsChildIteration = True
 
             row += 1
@@ -177,7 +188,7 @@ class ExdirTreeModel(QAbstractItemModel):
 
 
     def loadFile(self):
-        if not self.source.isValid() or self.source.isEmpty():        
+        if not self.source.isValid() or self.source.isEmpty():
             print("Not loading because", self.source)
             return
 
@@ -194,7 +205,7 @@ class ExdirTreeModel(QAbstractItemModel):
         self.endInsertRows()
         self.addChildObjects(fileItem, file, 0)
         self.dataChanged.emit(QModelIndex(), QModelIndex())
-        
+
     sourceChanged = pyqtSignal(QUrl)
     source = pyqtProperty(QUrl, source, setSource, notify=sourceChanged)
 
@@ -210,7 +221,7 @@ class ExdirTreeItem(QObject):
         self._info = ""
         self.parentItem = parent
         self.needsChildIteration = False
-        
+
     def child(self, row):
         return self.children()[row]
 

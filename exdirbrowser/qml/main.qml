@@ -91,6 +91,9 @@ ApplicationWindow {
 
     FileDialog {
         id: openFileDialog
+
+        selectFolder: true
+
         function loadFile() {
             windowRoot.loadFile(fileUrl)
         }
@@ -102,11 +105,11 @@ ApplicationWindow {
 
     ExdirDatasetModel {
         id: tableModel
-    
+
         function loadCurrentDataset() {
             tableModel.dataset = treeView.currentItem.path
         }
-    
+
         function loadOrAsk(acceptCallback, rejectCallback, discardCallback) {
             if(!tableModel.hasUnsavedChanges) {
                 acceptCallback()
@@ -117,7 +120,7 @@ ApplicationWindow {
                 saveQuestionDialog.open()
             }
         }
-    
+
         currentSlice: sliceSlider.value
         source: treeModel.source
     }
@@ -224,11 +227,11 @@ ApplicationWindow {
             function revertSelection() {
                 selection.revertSelection()
             }
-            
+
             onDoubleClicked: __model.isExpanded(index) ? __model.collapse(index) : __model.expand(index)
             // onClicked: expand(index)
-            
-            
+
+
             // TODO these are defined in the original TreeView, but call TreeView.expand()
             // which is currently broken in PyQt. Remove these once the original functions work.
             Keys.onRightPressed: {
@@ -415,36 +418,36 @@ ApplicationWindow {
                     font.weight: Font.Light
                     font.pointSize: 10
                 }
-        
+
             }
         }
         ScrollView {
             id: scrollView
-        
+
             property bool textVisible: true
             property real lastMove: Date.now()
-            
+
             property real contentX: flickableItem.contentX
             property real contentY: flickableItem.contentY
-        
+
             Layout.fillHeight: true
             Layout.fillWidth: true
-        
+
             horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOn
             verticalScrollBarPolicy: Qt.ScrollBarAlwaysOn
             Rectangle {
                 anchors.fill: parent
                 color: "#fefefe"
             }
-        
+
             MatrixView {
                 id: tableView
-        
+
                 model: tableModel
-        
+
                 cellWidth: 75
                 cellHeight: 30
-        
+
                 delegate: Component {
                         Rectangle {
                         id: cell
